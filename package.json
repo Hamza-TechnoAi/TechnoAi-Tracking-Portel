@@ -1,0 +1,14 @@
+{
+  "name": "technoai-tracking",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "concurrently --kill-others --names backend,frontend \"npm run dev:backend\" \"npm run dev:frontend\"",
+    "dev:backend": "npm --prefix tracking-system-backend-main run dev",
+    "dev:frontend": "npm --prefix tracking-system-frontend-main/tracking-system-frontend-main run dev",
+    "setup": "npm --prefix tracking-system-backend-main ci && npm --prefix tracking-system-frontend-main/tracking-system-frontend-main ci"
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.1"
+  }
+}

@@ -1,0 +1,75 @@
+@use '../../../Styles/variables' as *;
+
+.login-form__field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.login-form__label {
+  font-size: 0.85rem;
+  font-weight: $fw-medium;
+  color: $text-muted;
+}
+
+.login-form__input {
+  width: 100%;
+  padding: 12px 14px;
+  color: $text;
+  background: rgba($white, 0.06);
+  border: 1px solid rgba($primary, 0.25);
+  border-radius: $radius-sm;
+  outline: none;
+  transition: border-color 0.2s ease;
+
+  &:focus {
+    border-color: $primary;
+  }
+
+  &::placeholder {
+    color: rgba($text-muted, 0.7);
+  }
+}
+
+.login-form__error {
+  margin: -8px 0 12px;
+  font-size: 0.82rem;
+  color: #ff8a8a;
+}
+
+.login-form__submit {
+  width: 100%;
+  margin-top: 8px;
+  padding: 12px 16px;
+  font-weight: $fw-semibold;
+  color: $black;
+  background: $primary;
+  border-radius: $radius-sm;
+  transition: background 0.2s ease, opacity 0.2s ease;
+
+  &:hover:not(:disabled) {
+    background: $primary-dark;
+  }
+
+  &:disabled {
+    opacity: 0.65;
+    cursor: not-allowed;
+  }
+}
+
+.login-form__password-wrap {
+  position: relative;
+}
+
+.login-form__toggle-password {
+  position: absolute;
+  top: 50%;
+  right: 12px;
+  transform: translateY(-50%);
+  color: $text-muted;
+
+  &:hover {
+    color: $primary;
+  }
+}

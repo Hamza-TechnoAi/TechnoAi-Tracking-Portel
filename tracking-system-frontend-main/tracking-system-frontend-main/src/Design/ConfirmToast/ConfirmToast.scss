@@ -1,0 +1,143 @@
+@use '../../Styles/dashboard-variables' as *;
+
+.confirm-toast-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: rgba(15, 23, 42, 0);
+  animation: confirmToastFadeIn 0.22s ease forwards;
+
+  &.is-exiting {
+    animation: confirmToastFadeOut 0.22s ease forwards;
+  }
+}
+
+.confirm-toast-modal {
+  position: relative;
+  width: min(420px, 100%);
+  padding: 24px 24px 20px;
+  color: $dash-text;
+  background: $dash-surface;
+  border: 1px solid $dash-border;
+  border-radius: $dash-radius;
+  box-shadow: $dash-shadow-md;
+  transform: scale(0.96) translateY(8px);
+  animation: confirmToastModalIn 0.22s ease forwards;
+
+  .confirm-toast-overlay.is-exiting & {
+    animation: confirmToastModalOut 0.22s ease forwards;
+  }
+
+  &.is-danger {
+    border-color: rgba($dash-danger, 0.2);
+    box-shadow: 0 16px 40px rgba($dash-danger, 0.12);
+  }
+}
+
+.confirm-toast-modal__close {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  color: $dash-text-muted;
+  border-radius: $dash-radius-sm;
+  transition: background 0.2s ease, color 0.2s ease;
+
+  &:hover {
+    color: $dash-text;
+    background: rgba($dash-primary, 0.12);
+  }
+}
+
+.confirm-toast-modal__title {
+  margin: 0 32px 8px 0;
+  font-size: $dash-font-lg;
+  font-weight: 700;
+  color: $dash-text;
+}
+
+.confirm-toast-modal__message {
+  margin: 0 0 20px;
+  font-size: $dash-font-sm;
+  line-height: 1.5;
+  color: $dash-text-muted;
+}
+
+.confirm-toast-modal__actions {
+  display: flex;
+  gap: 10px;
+}
+
+.confirm-toast-modal__cancel-btn,
+.confirm-toast-modal__confirm-btn {
+  flex: 1;
+  padding: 10px 14px;
+  font-size: $dash-font-sm;
+  font-weight: 600;
+  border-radius: $dash-radius-sm;
+}
+
+.confirm-toast-modal__cancel-btn {
+  color: $dash-text-muted;
+  background: #eef4f8;
+}
+
+.confirm-toast-modal__confirm-btn {
+  color: $dash-text;
+  background: linear-gradient(135deg, $dash-primary, $dash-primary-dark);
+  box-shadow: 0 4px 14px rgba($dash-primary, 0.25);
+
+  &.is-danger {
+    color: #fff;
+    background: linear-gradient(135deg, #f87171, $dash-danger);
+    box-shadow: 0 4px 14px rgba($dash-danger, 0.25);
+  }
+}
+
+@keyframes confirmToastFadeIn {
+  from {
+    background: rgba(15, 23, 42, 0);
+  }
+  to {
+    background: rgba(15, 23, 42, 0.45);
+  }
+}
+
+@keyframes confirmToastFadeOut {
+  from {
+    background: rgba(15, 23, 42, 0.45);
+  }
+  to {
+    background: rgba(15, 23, 42, 0);
+  }
+}
+
+@keyframes confirmToastModalIn {
+  from {
+    opacity: 0;
+    transform: scale(0.96) translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+@keyframes confirmToastModalOut {
+  from {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: scale(0.96) translateY(8px);
+  }
+}

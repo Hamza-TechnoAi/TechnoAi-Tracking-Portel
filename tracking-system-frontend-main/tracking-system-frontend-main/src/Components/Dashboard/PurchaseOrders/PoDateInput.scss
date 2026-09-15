@@ -1,0 +1,50 @@
+@use '../../../Styles/dashboard-variables' as *;
+
+.po-date-input {
+  width: 100%;
+}
+
+.po-date-input__control {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.po-date-input__control .po-management__input,
+.po-date-input__control .po-filters__input {
+  padding-right: 42px;
+}
+
+.po-date-input__calendar-btn {
+  position: absolute;
+  top: 50%;
+  right: 8px;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  color: $dash-primary-deep;
+  border-radius: 8px;
+  transform: translateY(-50%);
+
+  &:hover:not(:disabled) {
+    background: rgba($dash-primary, 0.14);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+.po-date-input__native-picker {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 42px;
+  height: 100%;
+  opacity: 0;
+  pointer-events: none;
+}

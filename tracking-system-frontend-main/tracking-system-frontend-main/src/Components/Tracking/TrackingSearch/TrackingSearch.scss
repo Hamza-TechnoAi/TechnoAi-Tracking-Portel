@@ -1,0 +1,119 @@
+@use '../../../Styles/variables' as *;
+@use '../../../Styles/mixins' as *;
+
+.tracking-search {
+  display: flex;
+  align-items: stretch;
+  gap: 5px;
+  width: 100%;
+  max-width: 560px;
+}
+
+.tracking-search__group {
+  display: flex;
+  align-items: stretch;
+  flex: 1;
+  min-width: 0;
+  border: 1px solid $primary;
+  border-radius: $radius;
+  overflow: hidden;
+  background: transparent;
+}
+
+.tracking-search__label {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  padding: 12px 20px;
+  background: $primary;
+  color: $black;
+  font-size: 0.8125rem;
+  font-weight: $fw-semibold;
+  white-space: nowrap;
+  user-select: none;
+  pointer-events: none;
+
+  @include respond-below(sm) {
+    padding: 12px 14px;
+    font-size: 0.75rem;
+  }
+}
+
+.tracking-search__input {
+  flex: 1;
+  min-width: 0;
+  padding: 12px 18px;
+  background: transparent;
+  border: none;
+  color: $text;
+  font-size: 0.875rem;
+
+  &::placeholder {
+    color: $primary;
+    opacity: 0.5;
+  }
+
+  &:focus {
+    outline: none;
+  }
+
+  &:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+  }
+}
+
+.tracking-search__icon-btn {
+  @include flex-center;
+  flex-shrink: 0;
+  width: 48px;
+  min-height: 48px;
+  padding: 0;
+  background: $primary;
+  color: $black;
+  border-radius: $radius;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+
+  &:hover:not(:disabled) {
+    opacity: 0.92;
+  }
+
+  &:active:not(:disabled) {
+    transform: translateY(1px);
+  }
+
+  &:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+  }
+}
+
+.tracking-search__icon {
+  width: 20px;
+  height: 20px;
+}
+
+.tracking-search__icon--loading {
+  animation: tracking-search-spin 0.8s linear infinite;
+}
+
+@keyframes tracking-search-spin {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@include respond-below(sm) {
+  .tracking-search__icon-btn {
+    width: 44px;
+    min-height: 44px;
+  }
+
+  .tracking-search__input {
+    padding: 11px 14px;
+  }
+}

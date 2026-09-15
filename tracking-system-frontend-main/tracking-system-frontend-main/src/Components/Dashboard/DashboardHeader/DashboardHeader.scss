@@ -1,0 +1,77 @@
+@use '../../../Styles/dashboard-variables' as *;
+
+.dashboard-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: $dash-z-header;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: $dash-header-height;
+  padding: 0 28px;
+  background: rgba($dash-surface, 0.92);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid $dash-border;
+  box-shadow: $dash-shadow-sm;
+}
+
+.dashboard-header__brand {
+  display: inline-flex;
+  align-items: center;
+}
+
+.dashboard-header__logo {
+  width: 72px;
+  height: auto;
+}
+
+.dashboard-header__user {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.dashboard-header__account-icon {
+  flex-shrink: 0;
+  font-size: 1.75rem;
+  color: $dash-primary-deep;
+}
+
+.dashboard-header__user-info {
+  text-align: left;
+}
+
+.dashboard-header__user-name {
+  margin: 0;
+  font-size: $dash-font-md;
+  font-weight: 600;
+  color: $dash-text;
+}
+
+.dashboard-header__user-role {
+  margin: 0;
+  font-size: $dash-font-xs;
+  font-weight: 500;
+  color: $dash-primary-deep;
+  text-transform: capitalize;
+}
+
+@include dash-respond-below(md) {
+  .dashboard-header {
+    padding: 0 16px;
+  }
+
+  .dashboard-header__account-icon {
+    font-size: 1.5rem;
+  }
+
+  .dashboard-header__user-name {
+    font-size: $dash-font-sm;
+  }
+
+  .dashboard-header__user-role {
+    font-size: $dash-font-xs;
+  }
+}

@@ -1,0 +1,100 @@
+@use '../../../Styles/dashboard-variables' as *;
+
+.circular-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 12px;
+}
+
+.circular-stat__ring-wrap {
+  position: relative;
+  display: grid;
+  place-items: center;
+}
+
+.circular-stat__svg {
+  display: block;
+  filter: drop-shadow(0 4px 12px rgba(46, 189, 180, 0.15));
+}
+
+.circular-stat__track {
+  fill: none;
+  stroke: rgba($dash-primary, 0.12);
+}
+
+.circular-stat__progress {
+  fill: none;
+  stroke-linecap: round;
+  transition: stroke-dashoffset 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.circular-stat__center {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+}
+
+.circular-stat__value {
+  font-weight: 700;
+  line-height: 1;
+  color: $dash-text;
+  letter-spacing: -0.02em;
+}
+
+.circular-stat__mini {
+  font-size: $dash-font-xs;
+  font-weight: 600;
+  color: $dash-text-muted;
+}
+
+.circular-stat__meta {
+  width: 100%;
+}
+
+.circular-stat__label {
+  margin: 0 0 3px;
+  font-size: $dash-font-sm;
+  font-weight: 600;
+  color: $dash-text;
+}
+
+.circular-stat__count {
+  margin: 0;
+  font-size: $dash-font-xs;
+  color: $dash-text-muted;
+
+  strong {
+    font-size: $dash-font-md;
+    font-weight: 700;
+    color: $dash-primary-deep;
+  }
+}
+
+.circular-stat__of {
+  color: $dash-text-soft;
+}
+
+.circular-stat__sublabel {
+  margin: 4px 0 0;
+  font-size: $dash-font-xs;
+  color: $dash-text-soft;
+}
+
+.circular-stat--lg .circular-stat__label {
+  font-size: $dash-font-md;
+}
+
+.circular-stat--sm .circular-stat__label {
+  font-size: $dash-font-xs;
+  line-height: 1.35;
+}
+
+.circular-stat--sm .circular-stat__count strong {
+  font-size: $dash-font-sm;
+}

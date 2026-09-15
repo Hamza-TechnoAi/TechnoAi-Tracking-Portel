@@ -1,0 +1,102 @@
+@use '../../../Styles/variables' as *;
+@use '../../../Styles/mixins' as *;
+
+.subscribe-updates {
+  position: fixed;
+  inset: 0;
+  z-index: 1200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.subscribe-updates__overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  border: 0;
+}
+
+.subscribe-updates__dialog {
+  position: relative;
+  width: min(100%, 420px);
+  padding: 24px;
+  background: $dark-surface;
+  border: 1px solid rgba($primary, 0.35);
+  border-radius: $radius;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.35);
+}
+
+.subscribe-updates__title {
+  margin: 0 0 8px;
+  font-size: 1.25rem;
+  font-weight: $fw-semibold;
+  color: $text;
+}
+
+.subscribe-updates__subtitle {
+  margin: 0 0 18px;
+  font-size: 0.875rem;
+  color: rgba($text, 0.75);
+}
+
+.subscribe-updates__label {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 0.8125rem;
+  font-weight: $fw-medium;
+  color: rgba($text, 0.85);
+}
+
+.subscribe-updates__input {
+  width: 100%;
+  padding: 10px 12px;
+  font-size: 0.875rem;
+  color: $text;
+  background: rgba($dark-surface, 0.8);
+  border: 1px solid rgba($primary, 0.45);
+  border-radius: $radius-sm;
+  outline: none;
+
+  &:focus {
+    border-color: $primary;
+    box-shadow: 0 0 0 3px rgba($primary, 0.2);
+  }
+}
+
+.subscribe-updates__error {
+  margin: 8px 0 0;
+  font-size: 0.8125rem;
+  color: #f87171;
+}
+
+.subscribe-updates__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.subscribe-updates__cancel-btn,
+.subscribe-updates__submit-btn {
+  padding: 10px 16px;
+  font-size: 0.875rem;
+  font-weight: $fw-semibold;
+  border-radius: $radius-sm;
+}
+
+.subscribe-updates__cancel-btn {
+  color: rgba($text, 0.8);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.subscribe-updates__submit-btn {
+  color: $text;
+  background: $primary;
+
+  &:disabled {
+    opacity: 0.65;
+    cursor: not-allowed;
+  }
+}

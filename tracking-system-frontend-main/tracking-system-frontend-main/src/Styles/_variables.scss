@@ -1,0 +1,66 @@
+// ===========================================================================
+// TechnoAi Tracking — Brand & Design Tokens
+// ===========================================================================
+
+$primary: #73DED6;
+$primary-dark: #3bb8b0;
+$secondary: #8b9bb4;
+
+$black: #050a12;
+$dark: #0a1525;
+$dark-surface: #0d1f2d;
+$white: #ffffff;
+$light: #c8d4e0;
+
+$tertiary: $dark;
+
+$text: #ffffff;
+$text-muted: #a8b8c8;
+$heading: #ffffff;
+$bg: $black;
+$border: $primary;
+
+$font-sans: 'BDO Grotesk', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+$font-heading: 'BDO Grotesk', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+
+$fw-light: 300;
+$fw-regular: 400;
+$fw-medium: 500;
+$fw-semibold: 600;
+$fw-bold: 700;
+
+$container-max: 1200px;
+$container-pad: 24px;
+$page-gutter: 24px;
+
+$radius: 10px;
+$radius-xs: 5px;
+$radius-sm: 8px;
+$radius-md: 10px;
+$radius-lg: 15px;
+
+$header-spacing-below: 60px;
+
+$shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.2);
+$shadow-md: 0 10px 30px rgba(0, 0, 0, 0.3);
+
+$z-header: 1000;
+$z-overlay: 5000;
+$z-loader: 9999;
+
+$bp-sm: 480px;
+$bp-md: 768px;
+$bp-lg: 1024px;
+$bp-xl: 1280px;
+
+$tracking-gradient: linear-gradient(
+  180deg,
+  $black 0%,
+  mix($primary, $black, 14%) 28%,
+  mix($primary, $black, 24%) 50%,
+  mix($primary, $black, 14%) 72%,
+  $black 100%
+);
+
+$navbar-glass-bg: rgba($white, 0.1);
+$navbar-glass-border: rgba($white, 0.2);

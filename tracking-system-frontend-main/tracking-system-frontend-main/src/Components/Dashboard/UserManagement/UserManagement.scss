@@ -1,0 +1,319 @@
+@use '../../../Styles/dashboard-variables' as *;
+
+.user-management__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.user-management__title {
+  margin: 0 0 4px;
+  font-size: $dash-font-2xl;
+  font-weight: 600;
+  color: $dash-text;
+}
+
+.user-management__subtitle {
+  margin: 0;
+  font-size: $dash-font-sm;
+  color: $dash-text-muted;
+}
+
+.user-management__add-btn {
+  padding: 8px 14px;
+  font-size: $dash-font-sm;
+  font-weight: 600;
+  color: $dash-text;
+  background: linear-gradient(135deg, $dash-primary, $dash-primary-dark);
+  border-radius: $dash-radius-sm;
+  box-shadow: 0 4px 14px rgba($dash-primary, 0.3);
+
+  &:hover {
+    box-shadow: 0 6px 18px rgba($dash-primary, 0.4);
+  }
+}
+
+.user-management__table-wrap {
+  overflow-x: auto;
+  background: $dash-surface;
+  border: 1px solid $dash-border;
+  border-radius: $dash-radius;
+  box-shadow: $dash-shadow-sm;
+}
+
+.user-management__table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 720px;
+  color: $dash-text;
+}
+
+.user-management__table th,
+.user-management__table td {
+  padding: 10px 12px;
+  text-align: left;
+  border-bottom: 1px solid $dash-border;
+  font-size: $dash-font-sm;
+  color: $dash-text;
+}
+
+.user-management__table th {
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.88);
+  background: #0f2233;
+}
+
+.user-management__table tbody tr:hover {
+  background: rgba($dash-primary, 0.04);
+}
+
+.user-management__badge {
+  display: inline-block;
+  padding: 3px 8px;
+  font-size: $dash-font-xs;
+  font-weight: 600;
+  border-radius: 999px;
+  background: rgba($dash-primary, 0.15);
+  color: $dash-primary-deep;
+}
+
+.user-management__badge.is-blocked {
+  background: rgba($dash-danger, 0.12);
+  color: $dash-danger;
+}
+
+.user-management__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.user-management__action-btn {
+  padding: 5px 8px;
+  font-size: $dash-font-xs;
+  font-weight: 600;
+  border-radius: $dash-radius-sm;
+  background: rgba($dash-primary, 0.12);
+  color: $dash-primary-deep;
+
+  &.is-danger {
+    background: rgba($dash-danger, 0.1);
+    color: $dash-danger;
+  }
+}
+
+.user-management__panel-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: $dash-z-header + 1;
+  background: rgba(0, 0, 0, 0);
+  transition: background 0.32s ease;
+
+  &.is-active {
+    background: rgba(0, 0, 0, 0.4);
+  }
+}
+
+.user-management__panel {
+  position: fixed;
+  top: 0;
+  right: 0;
+  left: auto;
+  z-index: $dash-z-header + 2;
+  width: min(560px, 100%);
+  height: 100vh;
+  padding: 28px 28px 24px;
+  overflow-y: auto;
+  color: $dash-text;
+  background: $dash-surface;
+  border-left: 1px solid $dash-border;
+  box-shadow: $dash-shadow-md;
+  transform: translateX(100%);
+  transition: transform 0.32s cubic-bezier(0.4, 0, 0.2, 1);
+
+  &.is-active {
+    transform: translateX(0);
+  }
+}
+
+.user-management__panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.user-management__panel-title {
+  margin: 0;
+  font-size: $dash-font-xl;
+  font-weight: 700;
+  color: $dash-text;
+}
+
+.user-management__panel-close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  color: $dash-text-muted;
+  border-radius: $dash-radius-sm;
+  transition: background 0.2s ease, color 0.2s ease;
+
+  &:hover {
+    color: $dash-text;
+    background: rgba($dash-primary, 0.12);
+  }
+}
+
+.user-management__form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px 18px;
+
+  &--single {
+    grid-template-columns: 1fr;
+  }
+}
+
+.user-management__panel-note {
+  margin: 0 0 18px;
+  font-size: $dash-font-sm;
+  line-height: 1.5;
+  color: $dash-text-muted;
+}
+
+.user-management__field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+
+  &--full {
+    grid-column: 1 / -1;
+  }
+}
+
+.user-management__label {
+  font-size: $dash-font-xs;
+  font-weight: 600;
+  color: $dash-text-muted;
+}
+
+.user-management__input,
+.user-management__select {
+  width: 100%;
+  padding: 9px 12px;
+  font-size: $dash-font-sm;
+  color: $dash-text;
+  background: $dash-surface;
+  border: 1px solid $dash-border;
+  border-radius: $dash-radius-sm;
+  outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+
+  &::placeholder {
+    color: $dash-text-soft;
+  }
+
+  &:focus {
+    border-color: $dash-primary;
+    box-shadow: 0 0 0 3px rgba($dash-primary, 0.15);
+  }
+}
+
+.user-management__select {
+  padding-right: 2.75rem;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8' fill='none'%3E%3Cpath d='M1 1.5L6 6.5L11 1.5' stroke='%2364748b' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 16px center;
+  background-size: 12px 8px;
+  cursor: pointer;
+}
+
+.user-management__error {
+  margin: 0;
+  font-size: 0.78rem;
+  color: $dash-danger;
+}
+
+.user-management__panel-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 28px;
+  padding-top: 20px;
+  border-top: 1px solid $dash-border;
+}
+
+.user-management__save-btn {
+  flex: 1;
+  padding: 10px;
+  font-size: $dash-font-sm;
+  font-weight: 600;
+  color: $dash-text;
+  background: linear-gradient(135deg, $dash-primary, $dash-primary-dark);
+  border-radius: $dash-radius-sm;
+  box-shadow: 0 4px 14px rgba($dash-primary, 0.25);
+
+  &:disabled {
+    opacity: 0.65;
+    cursor: not-allowed;
+  }
+}
+
+.user-management__cancel-btn {
+  flex: 1;
+  padding: 10px;
+  font-size: $dash-font-sm;
+  font-weight: 600;
+  color: $dash-text-muted;
+  background: #eef4f8;
+  border-radius: $dash-radius-sm;
+}
+
+.user-management__empty {
+  padding: 24px;
+  font-size: $dash-font-sm;
+  color: $dash-text-muted;
+}
+
+.user-management__state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  min-height: 220px;
+  font-size: $dash-font-sm;
+  color: $dash-text-muted;
+}
+
+.user-management__loader {
+  width: 44px;
+  height: 44px;
+  border: 3px solid rgba($dash-primary, 0.2);
+  border-top-color: $dash-primary;
+  border-radius: 50%;
+  animation: user-management-spin 0.8s linear infinite;
+}
+
+@keyframes user-management-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@include dash-respond-below(md) {
+  .user-management__form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .user-management__field--full {
+    grid-column: auto;
+  }
+}

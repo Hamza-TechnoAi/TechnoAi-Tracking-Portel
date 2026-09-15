@@ -1,0 +1,17 @@
+@use '../../../Styles/variables' as *;
+
+.tracking-brand-mark {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  line-height: 0.95;
+  font-weight: $fw-bold;
+  font-size: clamp(3rem, 12vw, 5.5rem);
+  letter-spacing: -0.02em;
+  color: $white;
+  user-select: none;
+}
+
+.tracking-brand-mark__line--accent {
+  color: $primary;
+}

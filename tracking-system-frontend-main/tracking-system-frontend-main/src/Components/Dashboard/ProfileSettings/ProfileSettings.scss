@@ -1,0 +1,186 @@
+@use '../../../Styles/dashboard-variables' as *;
+
+.profile-settings__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.profile-settings__title {
+  margin: 0 0 4px;
+  font-size: $dash-font-2xl;
+  font-weight: 600;
+  color: $dash-text;
+}
+
+.profile-settings__subtitle {
+  margin: 0;
+  font-size: $dash-font-sm;
+  color: $dash-text-muted;
+}
+
+.profile-settings__role-badge {
+  display: inline-block;
+  padding: 6px 12px;
+  font-size: $dash-font-xs;
+  font-weight: 600;
+  color: $dash-primary-deep;
+  background: rgba($dash-primary, 0.15);
+  border-radius: 999px;
+}
+
+.profile-settings {
+  width: 100%;
+}
+
+.profile-settings__card--full {
+  width: 100%;
+}
+
+.profile-settings__card {
+  padding: 22px;
+  background: $dash-surface;
+  border: 1px solid $dash-border;
+  border-radius: $dash-radius;
+  box-shadow: $dash-shadow-sm;
+}
+
+.profile-settings__card-title {
+  margin: 0 0 18px;
+  font-size: $dash-font-lg;
+  font-weight: 600;
+  color: $dash-text;
+}
+
+.profile-settings__form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px 18px;
+
+  &--single {
+    grid-template-columns: 1fr;
+  }
+
+  &--password {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.profile-settings__field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+
+  &--full {
+    grid-column: 1 / -1;
+  }
+}
+
+.profile-settings__phone-row {
+  display: flex;
+  gap: 10px;
+  align-items: stretch;
+}
+
+.profile-settings__input--code {
+  flex: 0 0 88px;
+  min-width: 88px;
+  padding-inline: 10px;
+  text-align: center;
+}
+
+.profile-settings__label {
+  font-size: $dash-font-xs;
+  font-weight: 600;
+  color: $dash-text-muted;
+}
+
+.profile-settings__input {
+  width: 100%;
+  padding: 9px 12px;
+  font-size: $dash-font-sm;
+  color: $dash-text;
+  background: $dash-surface;
+  border: 1px solid $dash-border;
+  border-radius: $dash-radius-sm;
+  outline: none;
+
+  &:focus {
+    border-color: $dash-primary;
+    box-shadow: 0 0 0 3px rgba($dash-primary, 0.15);
+  }
+}
+
+.profile-settings__error {
+  margin: 0;
+  font-size: 0.78rem;
+  color: $dash-danger;
+}
+
+.profile-settings__save-btn {
+  min-width: 160px;
+  margin-top: 20px;
+  padding: 10px 20px;
+  font-size: $dash-font-sm;
+  font-weight: 600;
+  color: $dash-text;
+  background: linear-gradient(135deg, $dash-primary, $dash-primary-dark);
+  border-radius: $dash-radius-sm;
+  box-shadow: 0 4px 14px rgba($dash-primary, 0.25);
+
+  &:disabled {
+    opacity: 0.65;
+    cursor: not-allowed;
+  }
+}
+
+.profile-settings__state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  min-height: 220px;
+  font-size: $dash-font-sm;
+  color: $dash-text-muted;
+}
+
+.profile-settings__loader {
+  width: 44px;
+  height: 44px;
+  border: 3px solid rgba($dash-primary, 0.2);
+  border-top-color: $dash-primary;
+  border-radius: 50%;
+  animation: profile-settings-spin 0.8s linear infinite;
+}
+
+@keyframes profile-settings-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@include dash-respond-below(md) {
+  .profile-settings__form-grid,
+  .profile-settings__form-grid--password {
+    grid-template-columns: 1fr;
+  }
+
+  .profile-settings__field--full {
+    grid-column: auto;
+  }
+
+  .profile-settings__phone-row {
+    flex-direction: column;
+  }
+
+  .profile-settings__input--code {
+    flex: 1 1 auto;
+    width: 100%;
+    text-align: left;
+  }
+}

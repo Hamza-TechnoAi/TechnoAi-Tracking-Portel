@@ -1,0 +1,8 @@
+@use '../../../Styles/variables' as *;
+
+.tracking-footer {
+  text-align: center;
+  padding: 24px $page-gutter 32px;
+  font-size: 0.75rem;
+  color: $text-muted;
+}

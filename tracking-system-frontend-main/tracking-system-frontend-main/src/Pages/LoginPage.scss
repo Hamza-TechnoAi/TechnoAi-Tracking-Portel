@@ -1,0 +1,56 @@
+@use '../Styles/variables' as *;
+
+.login-page {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background:
+    radial-gradient(ellipse 80% 50% at 50% -10%, rgba($primary, 0.18), transparent 55%),
+    $bg;
+}
+
+.login-page__body {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 24px;
+}
+
+.login-page__card {
+  width: 100%;
+  max-width: 420px;
+  padding: 32px 28px;
+  background: $dark-surface;
+  border: 1px solid rgba($primary, 0.35);
+  border-radius: $radius;
+  box-shadow: $shadow-md;
+}
+
+.login-page__title {
+  margin: 0 0 8px;
+  font-size: 1.5rem;
+  font-weight: $fw-semibold;
+  color: $heading;
+}
+
+.login-page__subtitle {
+  margin: 0 0 24px;
+  font-size: 0.9rem;
+  color: $text-muted;
+}
+
+.login-page__back {
+  margin: 20px 0 0;
+  text-align: center;
+  font-size: 0.88rem;
+
+  a {
+    color: $primary;
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}

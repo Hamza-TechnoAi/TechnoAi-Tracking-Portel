@@ -1,0 +1,73 @@
+// Modern dashboard design tokens — TechnoAi teal accent
+
+$dash-primary: #73ded6;
+$dash-primary-light: #a8efe9;
+$dash-primary-dark: #2ebdb4;
+$dash-primary-deep: #1a9e96;
+$dash-accent: #5eead4;
+
+$dash-bg: #eef4f8;
+$dash-bg-gradient: linear-gradient(145deg, #eef4f8 0%, #e4f0f5 45%, #dceef0 100%);
+$dash-surface: #ffffff;
+$dash-surface-elevated: #ffffff;
+
+$dash-sidebar-bg: linear-gradient(180deg, #0c1824 0%, #0f2233 55%, #0d1f2d 100%);
+$dash-sidebar-text: rgba(255, 255, 255, 0.72);
+$dash-sidebar-text-active: #ffffff;
+$dash-sidebar-border: rgba(115, 222, 214, 0.12);
+
+$dash-text: #0f172a;
+$dash-text-muted: #64748b;
+$dash-text-soft: #94a3b8;
+$dash-border: rgba(15, 23, 42, 0.08);
+$dash-border-strong: rgba(115, 222, 214, 0.35);
+
+$dash-danger: #ef4444;
+$dash-warning: #f59e0b;
+$dash-success: #10b981;
+$dash-info: #0ea5e9;
+$dash-purple: #8b5cf6;
+
+$dash-header-height: 64px;
+$dash-sidebar-width: 248px;
+
+$dash-font-xs: 0.68rem;
+$dash-font-sm: 0.75rem;
+$dash-font-base: 0.8125rem;
+$dash-font-md: 0.875rem;
+$dash-font-lg: 0.9375rem;
+$dash-font-xl: 1.0625rem;
+$dash-font-2xl: 1.2rem;
+$dash-font-3xl: 1.35rem;
+
+$dash-radius: 14px;
+$dash-radius-sm: 10px;
+$dash-radius-lg: 20px;
+
+$dash-shadow-sm: 0 4px 14px rgba(15, 23, 42, 0.06);
+$dash-shadow-md: 0 12px 32px rgba(15, 23, 42, 0.1);
+$dash-shadow-card: 0 8px 24px rgba(46, 189, 180, 0.08);
+$dash-shadow-glow: 0 0 0 1px rgba(115, 222, 214, 0.15);
+
+$dash-z-header: 1000;
+$dash-z-sidebar: 900;
+
+$dash-bp-md: 768px;
+$dash-bp-lg: 1100px;
+$dash-bp-xl: 1400px;
+
+@mixin dash-respond-below($breakpoint) {
+  @if $breakpoint == md {
+    @media (max-width: $dash-bp-md) {
+      @content;
+    }
+  } @else if $breakpoint == lg {
+    @media (max-width: $dash-bp-lg) {
+      @content;
+    }
+  } @else if $breakpoint == xl {
+    @media (max-width: $dash-bp-xl) {
+      @content;
+    }
+  }
+}

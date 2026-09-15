@@ -1,0 +1,50 @@
+@use '../../../Styles/dashboard-variables' as *;
+
+.server-error-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 280px;
+  padding: 40px 24px;
+  text-align: center;
+}
+
+.server-error-state__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 52px;
+  height: 52px;
+  margin-bottom: 16px;
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: $dash-danger;
+  background: rgba($dash-danger, 0.1);
+  border-radius: 50%;
+}
+
+.server-error-state__title {
+  margin: 0 0 8px;
+  font-size: $dash-font-xl;
+  font-weight: 700;
+  color: $dash-text;
+}
+
+.server-error-state__message {
+  max-width: 420px;
+  margin: 0 0 20px;
+  font-size: $dash-font-sm;
+  line-height: 1.6;
+  color: $dash-text-muted;
+}
+
+.server-error-state__refresh-btn {
+  padding: 10px 20px;
+  font-size: $dash-font-sm;
+  font-weight: 600;
+  color: $dash-text;
+  background: linear-gradient(135deg, $dash-primary, $dash-primary-dark);
+  border-radius: $dash-radius-sm;
+  box-shadow: 0 4px 14px rgba($dash-primary, 0.25);
+}
