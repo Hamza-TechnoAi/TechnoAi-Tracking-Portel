@@ -8,7 +8,9 @@ const router = require('./app/routes/common.routes');
 const app = express();
 const PORT = process.env.PORT || 5050;
 
-configureDB();
+configureDB().then(() => {
+  require('./app/services/notificationService/poNotification.service').startOverdueChecks();
+});
 
 // Reflect request Origin (needed for Vercel + free-tier wakeups)
 app.use(

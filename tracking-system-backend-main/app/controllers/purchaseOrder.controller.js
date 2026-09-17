@@ -14,6 +14,7 @@ const {
   notifyPoCreated,
   notifyLineStatusChange,
   notifyPoClosed,
+  notifyPoEtaChange,
 } = require('../services/notificationService/poNotification.service');
 const salesPersonCtlr = require('./salesPerson.controller');
 const { seedFromPurchaseOrdersIfEmpty } = salesPersonCtlr;
@@ -155,6 +156,11 @@ purchaseOrderCtlr.create = async ({ body, user }) => {
     paymentTerms: body.paymentTerms.trim(),
     overallPoEta: body.overallPoEta,
     clientName: body.clientName.trim(),
+    supplier: body.supplier || '',
+    supplierContact: body.supplierContact || '',
+    supplierPhone: body.supplierPhone || '',
+    supplierEmail: body.supplierEmail || '',
+
     salesPerson: body.salesPerson.trim(),
     contactPerson: body.contactPerson.trim(),
     contactPersonEmail: body.contactPersonEmail.trim(),
@@ -185,6 +191,7 @@ purchaseOrderCtlr.create = async ({ body, user }) => {
   });
 
   await notifyPoCreated(purchaseOrder);
+  await notifyPoClosed(purchaseOrder);
 
   return {
     message: 'Purchase order created successfully',
@@ -247,6 +254,8 @@ purchaseOrderCtlr.getById = async ({ params }) => {
 
 purchaseOrderCtlr.update = async ({ params, body, user }) => {
   const purchaseOrder = await findPurchaseOrderOrFail(params.id);
+  const previousEta = purchaseOrder.overallPoEta;
+  const previousPoStatus = purchaseOrder.poStatus;
 
   await ensureUniqueNumbers({
     poNumber: body.poNumber,
@@ -261,6 +270,11 @@ purchaseOrderCtlr.update = async ({ params, body, user }) => {
     'paymentTerms',
     'overallPoEta',
     'clientName',
+    'supplier',
+    'supplierContact',
+    'supplierPhone',
+    'supplierEmail',
+
     'salesPerson',
     'contactPerson',
     'contactPersonEmail',
@@ -299,6 +313,9 @@ purchaseOrderCtlr.update = async ({ params, body, user }) => {
     user,
   });
 
+  await notifyPoEtaChange(purchaseOrder, previousEta);
+  if (previousPoStatus !== 'Closed') await notifyPoClosed(purchaseOrder);
+
   return {
     message: 'Purchase order updated successfully',
     data: purchaseOrder,
@@ -318,6 +335,7 @@ purchaseOrderCtlr.remove = async ({ params }) => {
 
 purchaseOrderCtlr.addLine = async ({ params, body, user }) => {
   const purchaseOrder = await findPurchaseOrderOrFail(params.id);
+  const previousPoStatus = purchaseOrder.poStatus;
   const line = normalizeLineItem(body);
 
   const duplicateLine = purchaseOrder.lines.find(
@@ -332,6 +350,7 @@ purchaseOrderCtlr.addLine = async ({ params, body, user }) => {
   purchaseOrder.updatedBy = user?.id;
   syncPurchaseOrderState(purchaseOrder);
   await purchaseOrder.save();
+  if (previousPoStatus !== 'Closed') await notifyPoClosed(purchaseOrder);
 
   await logActivity({
     purchaseOrderId: purchaseOrder._id,
@@ -358,6 +377,7 @@ purchaseOrderCtlr.updateLine = async ({ params, body, user }) => {
   }
 
   const previousStatus = line.status;
+  const previousEta = line.eta;
   const previousPoStatus = purchaseOrder.poStatus;
 
   if (body.description !== undefined) line.description = body.description.trim();
@@ -378,14 +398,7 @@ purchaseOrderCtlr.updateLine = async ({ params, body, user }) => {
   syncPurchaseOrderState(purchaseOrder);
   await purchaseOrder.save();
 
-  if (body.status !== undefined && previousStatus !== line.status) {
-    await notifyLineStatusChange({
-      purchaseOrder,
-      line,
-      previousStatus,
-      newStatus: line.status,
-    });
-  }
+  await notifyLineStatusChange({ purchaseOrder, line, previousStatus, previousEta });
 
   if (previousPoStatus !== 'Closed' && purchaseOrder.poStatus === 'Closed') {
     await notifyPoClosed(purchaseOrder);
@@ -409,6 +422,7 @@ purchaseOrderCtlr.updateLine = async ({ params, body, user }) => {
 
 purchaseOrderCtlr.removeLine = async ({ params, user }) => {
   const purchaseOrder = await findPurchaseOrderOrFail(params.id);
+  const previousPoStatus = purchaseOrder.poStatus;
   const lineNumber = Number(params.lineNumber);
   const lineIndex = purchaseOrder.lines.findIndex(
     (item) => item.lineNumber === lineNumber,
@@ -422,6 +436,7 @@ purchaseOrderCtlr.removeLine = async ({ params, user }) => {
   purchaseOrder.updatedBy = user?.id;
   syncPurchaseOrderState(purchaseOrder);
   await purchaseOrder.save();
+  if (previousPoStatus !== 'Closed') await notifyPoClosed(purchaseOrder);
 
   await logActivity({
     purchaseOrderId: purchaseOrder._id,

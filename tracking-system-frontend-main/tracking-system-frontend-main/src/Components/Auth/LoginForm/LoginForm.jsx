@@ -19,6 +19,7 @@ export default function LoginForm({ idPrefix = 'login' }) {
   const [formErrors, setFormErrors] = useState({});
   const [serverError, setServerError] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [rememberMe, setRememberMe] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
   const handleChange = (field) => (event) => {
@@ -72,7 +73,7 @@ export default function LoginForm({ idPrefix = 'login' }) {
     <form className="login-form" onSubmit={handleSubmit} noValidate>
       <div className="login-form__field">
         <label className="login-form__label" htmlFor={`${idPrefix}-username`}>
-          Email or phone
+          Email Address
         </label>
         <input
           id={`${idPrefix}-username`}
@@ -89,9 +90,10 @@ export default function LoginForm({ idPrefix = 'login' }) {
       </div>
 
       <div className="login-form__field">
-        <label className="login-form__label" htmlFor={`${idPrefix}-password`}>
-          Password
-        </label>
+        <div className="login-form__label-row">
+          <label className="login-form__label" htmlFor={`${idPrefix}-password`}>Password</label>
+          <button type="button" className="login-form__forgot">Forgot password?</button>
+        </div>
         <div className="login-form__password-wrap">
           <input
             id={`${idPrefix}-password`}
@@ -117,6 +119,11 @@ export default function LoginForm({ idPrefix = 'login' }) {
       </div>
 
       {serverError && <p className="login-form__error">{serverError}</p>}
+
+      <label className="login-form__remember">
+        <input type="checkbox" checked={rememberMe} onChange={(event) => setRememberMe(event.target.checked)} />
+        <span>Remember me</span>
+      </label>
 
       <button type="submit" className="login-form__submit" disabled={isLoading}>
         {isLoading ? 'Signing in...' : 'Sign in'}

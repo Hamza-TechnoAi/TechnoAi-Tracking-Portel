@@ -48,6 +48,12 @@ export default function PoFilters({
 
   return (
     <form className="po-filters" onSubmit={onApply}>
+      {isReporting && (
+        <div className="po-filters__heading">
+          <div><h2>Filter report</h2><p>Refine your results by date, client, or order details.</p></div>
+          <span>FILTERS</span>
+        </div>
+      )}
       <div className="po-filters__grid">
         <div className="po-filters__field">
           <label className="po-filters__label" htmlFor="filter-date-from">Date from</label>

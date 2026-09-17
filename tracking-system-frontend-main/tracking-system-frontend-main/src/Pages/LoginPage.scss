@@ -4,9 +4,15 @@
   display: flex;
   flex-direction: column;
   min-height: 100vh;
+  font-family: "TheSansArabic", Arial, sans-serif;
   background:
-    radial-gradient(ellipse 80% 50% at 50% -10%, rgba($primary, 0.18), transparent 55%),
-    $bg;
+    linear-gradient(90deg, rgba(2, 15, 27, 0.52) 0%, rgba(2, 15, 27, 0.30) 48%, rgba(2, 15, 27, 0.14) 100%),
+    url('../assets/login-warehouse.png') center / cover no-repeat fixed;
+}
+
+.login-page input,
+.login-page button {
+  font-family: inherit;
 }
 
 .login-page__body {
@@ -14,43 +20,56 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 40px 24px;
+  padding: 28px 24px;
 }
 
 .login-page__card {
   width: 100%;
-  max-width: 420px;
-  padding: 32px 28px;
-  background: $dark-surface;
-  border: 1px solid rgba($primary, 0.35);
-  border-radius: $radius;
-  box-shadow: $shadow-md;
+  max-width: 388px;
+  padding: 30px 35px 22px;
+  background: linear-gradient(145deg, rgba(18, 43, 59, .96), rgba(6, 25, 38, .94));
+  border: 1px solid #48d8e0;
+  border-radius: 12px;
+  box-shadow: 0 18px 44px rgba(0, 0, 0, .4);
+}
+
+.login-page__brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 32px;
+  color: #eefaff;
+
+  .login-page__logo { width: 88px; filter: brightness(0) invert(1); }
+  strong { display: block; font-size: 23px; line-height: 1.1; }
+  span { display: block; margin-top: 4px; color: #9ec0d3; font-size: 10px; font-weight: 700; letter-spacing: .2em; text-transform: uppercase; }
+}
+
+@media (max-width: 768px) {
+  .login-page {
+    background-position: 58% center;
+    background-attachment: scroll;
+  }
 }
 
 .login-page__title {
-  margin: 0 0 8px;
-  font-size: 1.5rem;
+  margin: 0 0 6px;
+  font-size: 25px;
   font-weight: $fw-semibold;
   color: $heading;
 }
 
 .login-page__subtitle {
-  margin: 0 0 24px;
-  font-size: 0.9rem;
-  color: $text-muted;
+  margin: 0 0 26px;
+  font-size: 16px;
+  color: #83b6d3;
 }
 
-.login-page__back {
-  margin: 20px 0 0;
+.login-page__copyright {
+  margin: 19px 0 0;
+  padding-top: 15px;
   text-align: center;
-  font-size: 0.88rem;
-
-  a {
-    color: $primary;
-    text-decoration: none;
-
-    &:hover {
-      text-decoration: underline;
-    }
-  }
+  font-size: 12px;
+  color: #84abc2;
+  border-top: 1px solid rgba(95, 192, 226, .52);
 }

@@ -1,0 +1,23 @@
+@use '../../../Styles/dashboard-variables' as *;
+.notification-bell {
+  position: relative;
+  button { cursor: pointer; font: inherit; }
+  button:focus-visible { outline: 2px solid $dash-primary-deep; outline-offset: 3px; }
+  button:disabled { cursor: wait; opacity: .65; }
+  &__trigger { position: relative; display: grid; place-items: center; width: 42px; height: 42px; border: 1px solid $dash-border; border-radius: 12px; background: $dash-surface; color: $dash-primary-deep; font-size: 26px !important; }
+  &__badge { position: absolute; top: -5px; right: -6px; background: #087f75; color: white; border-radius: 12px; padding: 2px 5px; min-width: 18px; font-size: 10px; }
+  &__panel { position: absolute; right: 0; top: 52px; width: 370px; max-width: calc(100vw - 32px); max-height: min(70vh, 520px); overflow-y: auto; background: $dash-surface; color: $dash-text; border: 1px solid $dash-border; border-radius: $dash-radius; box-shadow: $dash-shadow-md; font-size: 13px;
+    scrollbar-width: none;
+    overscroll-behavior-y: contain;
+    &::-webkit-scrollbar { display: none; }
+    > p { padding: 12px 16px; }
+    ul { list-style: none; margin: 0; padding: 0; }
+    li { border-top: 1px solid $dash-border; padding: 12px 16px; }
+    li.is-unread { background: #eefaf8; }
+  }
+  &__heading { display: flex; align-items: center; justify-content: space-between; padding: 14px 16px; button { border: 0; background: transparent; font-size: 20px; color: $dash-text-muted; } }
+  &__item { display: block; text-align: left; width: 100%; background: transparent; border: 0; padding: 0; color: $dash-text; overflow-wrap: anywhere; time { display: block; margin-top: 6px; font-size: 11px; color: $dash-text-muted; } }
+  &__read { margin-top: 8px; padding: 0; border: 0; background: transparent; color: #087f75; font-size: 11px !important; }
+  &__error { color: #b42318; }
+}
+@media (max-width: 768px) { .notification-bell__panel { position: fixed; top: 68px; right: 16px; } }

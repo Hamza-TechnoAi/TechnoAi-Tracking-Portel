@@ -9,7 +9,7 @@ const {
   updateLineItemSchema,
   createLineItemSchema,
 } = require('../validators/purchaseOrder.validator');
-const { STAFF_ROLES, EDIT_ROLES, ADMIN_ROLES } = require('../constants');
+const { STAFF_ROLES, EDIT_ROLES } = require('../constants');
 const setupRoutes = require('./route.util');
 
 const routes = [
@@ -60,7 +60,7 @@ const routes = [
   {
     method: 'delete',
     path: '/:id',
-    middlewares: [authenticateUser, authorizeUser(ADMIN_ROLES)],
+    middlewares: [authenticateUser, authorizeUser(EDIT_ROLES)],
     handler: purchaseOrderCtlr.remove,
   },
   {

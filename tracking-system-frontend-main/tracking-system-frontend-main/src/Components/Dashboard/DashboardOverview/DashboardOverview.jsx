@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import axios from 'axios';
+import { useAuth } from '../../../Context/AuthContext';
 import { API_BASE_URL, getAuthHeaders, getFriendlyErrorMessage } from '../../../Api/api';
 import ServerErrorState from '../../Common/ServerErrorState/ServerErrorState';
 import CircularStat from '../CircularStat/CircularStat';
@@ -80,6 +81,10 @@ const SECONDARY_STATS = [
 ];
 
 export default function DashboardOverview() {
+  const { user } = useAuth();
+  const profileName = [user?.firstName, user?.lastName]
+    .map(name => (typeof name === 'string' ? name.trim() : ''))
+    .filter(Boolean).join(' ');
   const [summary, setSummary] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState('');
@@ -130,7 +135,7 @@ export default function DashboardOverview() {
       <div className="dashboard-overview__head">
         <div>
           <span className="dashboard-overview__eyebrow">Analytics</span>
-          <h1 className="dashboard-overview__title">Dashboard Overview</h1>
+          <h1 className="dashboard-overview__title">{profileName ? `Welcome, ${profileName}!` : 'Welcome!'}</h1>
           <p className="dashboard-overview__subtitle">
             Real-time shipment and purchase order performance at a glance.
           </p>

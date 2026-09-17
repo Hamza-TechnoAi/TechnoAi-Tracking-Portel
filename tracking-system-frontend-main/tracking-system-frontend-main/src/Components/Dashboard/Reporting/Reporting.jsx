@@ -119,7 +119,8 @@ export default function Reporting() {
     <section className="reporting">
       <div className="reporting__head">
         <div>
-          <h1 className="reporting__title">Reporting</h1>
+          <p className="reporting__eyebrow">WORKSPACE / REPORTS</p>
+          <h1 className="reporting__title">Purchase order reports</h1>
           <p className="reporting__subtitle">
             Filter and review purchase orders for operational reporting.
           </p>
@@ -139,7 +140,7 @@ export default function Reporting() {
               }}
             >
               <MdDownload size={16} aria-hidden />
-              {isExporting ? 'Exporting...' : 'Export / Download'}
+              {isExporting ? 'Exporting...' : 'Export report'}
             </button>
 
             {isExportMenuOpen && !isExporting && (
@@ -182,6 +183,10 @@ export default function Reporting() {
         <ServerErrorState message={loadError} onRetry={loadReport} retryLabel="Try again" />
       ) : (
         <div className="reporting__table-wrap">
+          <div className="reporting__table-heading">
+            <div><h2>Purchase orders</h2><p>Review order details and delivery status.</p></div>
+            <span className="reporting__count">{isLoading ? 'Loading…' : `${pagination.total ?? 0} records`}</span>
+          </div>
           {isLoading ? (
             <div className="reporting__state">
               <div className="reporting__loader" aria-hidden />

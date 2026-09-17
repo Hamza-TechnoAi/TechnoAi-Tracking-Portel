@@ -4,22 +4,24 @@
   display: flex;
   flex-direction: column;
   gap: 8px;
-  margin-bottom: 16px;
+  margin-bottom: 20px;
 }
+
+.login-form__label-row { display: flex; justify-content: space-between; align-items: center; }
 
 .login-form__label {
   font-size: 0.85rem;
   font-weight: $fw-medium;
-  color: $text-muted;
+  color: #e5f2fa;
 }
 
 .login-form__input {
   width: 100%;
-  padding: 12px 14px;
-  color: $text;
-  background: rgba($white, 0.06);
-  border: 1px solid rgba($primary, 0.25);
-  border-radius: $radius-sm;
+  padding: 11px 13px;
+  color: #e8f7ff;
+  background: rgba(31, 70, 91, .56);
+  border: 1px solid #4ca9c9;
+  border-radius: 8px;
   outline: none;
   transition: border-color 0.2s ease;
 
@@ -32,6 +34,9 @@
   }
 }
 
+.login-form__forgot { color: #49e0de; font-size: .85rem; &:hover { text-decoration: underline; } }
+.login-form__remember { display: flex; align-items: center; gap: 8px; margin: -2px 0 16px; color: #9dbed0; font-size: .82rem; input { width: 18px; height: 18px; accent-color: #4eddda; } }
+
 .login-form__error {
   margin: -8px 0 12px;
   font-size: 0.82rem;
@@ -40,16 +45,16 @@
 
 .login-form__submit {
   width: 100%;
-  margin-top: 8px;
+  margin-top: 0;
   padding: 12px 16px;
   font-weight: $fw-semibold;
   color: $black;
-  background: $primary;
-  border-radius: $radius-sm;
+  background: #4fdad8;
+  border-radius: 7px;
   transition: background 0.2s ease, opacity 0.2s ease;
 
   &:hover:not(:disabled) {
-    background: $primary-dark;
+    background: #66e8e4;
   }
 
   &:disabled {

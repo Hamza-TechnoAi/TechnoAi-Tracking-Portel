@@ -4,7 +4,7 @@ import { parsePoPdfRows } from './poPdfParser';
 
 GlobalWorkerOptions.workerSrc = workerUrl;
 
-export async function importPoPdf(file) {
+export async function importPoPdf(file, documentType = 'po') {
   if (!/\.pdf$/i.test(file.name)) throw new Error('Please select a PDF file.');
   if (file.size > 10 * 1024 * 1024) throw new Error('Choose a PDF smaller than 10 MB.');
   const data = new Uint8Array(await file.arrayBuffer());
@@ -28,7 +28,7 @@ export async function importPoPdf(file) {
       pages.push(rows.sort((a,b)=>b.y-a.y).map(r=>r.cells.sort((a,b)=>a.x-b.x)));
       page.cleanup();
     }
-    const result = parsePoPdfRows(pages);
+    const result = parsePoPdfRows(pages, documentType);
     if (!result.text.trim()) throw new Error('This PDF has no selectable text. Scanned PDFs need OCR; upload a text PDF or enter the details manually.');
     if (!Object.keys(result.fields).length && !result.lines.length) result.warnings.unshift('No PO fields recognized in this layout. Use the extracted text below to fill the form.');
     return result;

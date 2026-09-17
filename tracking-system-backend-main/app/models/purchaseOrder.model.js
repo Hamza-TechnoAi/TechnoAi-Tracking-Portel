@@ -91,7 +91,6 @@ const purchaseOrderSchema = new Schema(
     },
     overallPoEta: {
       type: Date,
-      required: true,
     },
     clientName: {
       type: String,
@@ -114,6 +113,9 @@ const purchaseOrderSchema = new Schema(
       trim: true,
       lowercase: true,
     },
+    supplierContact: { type: String, default: '', trim: true },
+    supplierPhone: { type: String, default: '', trim: true },
+    supplierEmail: { type: String, default: '', trim: true },
     supplier: {
       type: String,
       default: '',
@@ -156,7 +158,7 @@ const purchaseOrderSchema = new Schema(
       ref: 'User',
     },
   },
-  { timestamps: true },
+  { timestamps: true, optimisticConcurrency: true },
 );
 
 purchaseOrderSchema.index({ clientName: 1 });

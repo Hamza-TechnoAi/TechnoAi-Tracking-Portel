@@ -116,3 +116,39 @@ Legacy: `LINE_STATUS_NOTIFICATIONS_ENABLED=true` also enables sending if `EMAIL_
 ## Notes
 
 - Reports (Excel/CSV/PDF) are planned for a later phase.
+
+
+## Staff notifications
+
+The header bell polls `/api/notifications` every 30 seconds (latest 20 plus total unread).
+`PATCH /api/notifications/:id/read` only updates the signed-in recipient's notification.
+Current approved, unblocked administrator/dataEntry/viewer accounts receive alerts because
+all three roles currently have access to all POs. Notification routes recheck account status
+and role in the database, not just the JWT. Clicking an alert opens the existing PO detail panel.
+
+Events: PO creation, item status/ETA change, overall PO ETA change, PO closure (including
+closure caused by adding/removing an item), and overdue undelivered items/orders.
+Subscriber emails use only PO number, public status, item number and changed status/ETA;
+no internal notes, prices, customer lists or subscriber addresses are shared.
+Existing PO emails are handled by the same service; no parallel legacy sender is called.
+
+Configuration (existing `.env`, never `env`):
+- `EMAIL_NOTIFICATIONS_ENABLED=true`, `EMAIL`, `APP_PASSWORD`: existing Gmail SMTP service.
+- `PUBLIC_TRACKING_URL`: public frontend URL for email links.
+- `INTERNAL_EMAIL_TRACKING`: comma-separated internal recipients for creation/updates/overdue.
+- `INTERNAL_EMAIL_PO_CLOSED`: comma-separated internal closure recipients.
+- `OVERDUE_CHECK_ENABLED=false`: optional; disables the built-in overdue scan (default enabled).
+
+Overdue scan runs at startup and daily at 00:00 UTC while the backend is running. Due today
+is not overdue until the next UTC day. Each item/ETA (or overall PO ETA when no item is overdue)
+alerts once, not every day. Restarting or running multiple instances uses the same database
+unique keys to suppress repeats. Notification and delivery unique indexes must be available;
+the service initializes them before sending. Bell alerts work with email disabled.
+
+SMTP is attempted at most once per event and normalized recipient. `notificationdeliveries`
+records claimed/sent/failed state. Failed or interrupted attempts are not automatically retried:
+SMTP cannot guarantee exactly-once delivery after an ambiguous timeout. This avoids duplicate
+emails; an interrupted claim can mean a missed email. Notification failures are logged and do
+not fail an already-saved PO. No job queue or new dependency is required.
+
+Run isolated notification checks: `node --test tests/notifications.test.js` (no live DB/email).

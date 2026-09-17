@@ -74,7 +74,7 @@ const createPurchaseOrderSchema = {
     trim: true,
   },
   overallPoEta: {
-    notEmpty: { errorMessage: 'Overall PO ETA is required' },
+    optional: true,
     isISO8601: { errorMessage: 'Invalid overall PO ETA format' },
     toDate: true,
   },
@@ -105,6 +105,10 @@ const createPurchaseOrderSchema = {
     notEmpty: { errorMessage: 'Subject is required' },
     trim: true,
   },
+  supplier: { optional: true, isString: true, trim: true },
+  supplierContact: { optional: true, isString: true, trim: true },
+  supplierPhone: { optional: true, isString: true, trim: true },
+  supplierEmail: { optional: true, isString: true, trim: true, custom: { options: value => !value || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value), errorMessage: 'Invalid supplier email' } },
   internalNotes: { optional: true, trim: true },
   'lines.*.lineNumber': lineItemSchema.lineNumber,
   'lines.*.description': lineItemSchema.description,
@@ -156,6 +160,10 @@ const updatePurchaseOrderSchema = {
     notEmpty: { errorMessage: 'Subject is required' },
     trim: true,
   },
+  supplier: { optional: true, isString: true, trim: true },
+  supplierContact: { optional: true, isString: true, trim: true },
+  supplierPhone: { optional: true, isString: true, trim: true },
+  supplierEmail: { optional: true, isString: true, trim: true, custom: { options: value => !value || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value), errorMessage: 'Invalid supplier email' } },
   internalNotes: { optional: true, trim: true },
 };
 

@@ -83,7 +83,7 @@ export default function DashboardLayout({
 
   return (
     <div className="dashboard-layout">
-      <DashboardHeader />
+      <DashboardHeader onProfileClick={() => onMenuChange('profile')} />
 
       <div className="dashboard-layout__body">
         <aside className="dashboard-layout__sidebar">

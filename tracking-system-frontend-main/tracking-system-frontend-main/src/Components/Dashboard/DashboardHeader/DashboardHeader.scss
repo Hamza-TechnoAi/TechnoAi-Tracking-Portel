@@ -75,3 +75,84 @@
     font-size: $dash-font-xs;
   }
 }
+
+.dashboard-header {
+  height: 72px;
+  padding: 0 34px;
+  background: rgba(255, 255, 255, .94);
+  border-bottom-color: #e7edf2;
+  box-shadow: 0 1px 0 rgba(15, 39, 57, .02);
+}
+
+.dashboard-header__brand { gap: 14px; }
+.dashboard-header__logo { width: 84px; }
+.dashboard-header__brand-divider { width: 1px; height: 24px; background: #dbe4ea; }
+.dashboard-header__brand-context {
+  color: #6d7b89;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+}
+.dashboard-header__user {
+  gap: 10px;
+  padding: 7px 12px 7px 8px;
+  border: 1px solid #e6edf1;
+  border-radius: 12px;
+  background: #fbfcfd;
+}
+.dashboard-header__user-name { font-size: 13px; }
+.dashboard-header__user-role { font-size: 10px; color: #087f75; letter-spacing: .04em; }
+.dashboard-header__account-icon { font-size: 31px; color: #119e95; }
+
+@media (max-width: 768px) {
+  .dashboard-header { height: 64px; padding: 0 16px; }
+  .dashboard-header__brand-context, .dashboard-header__brand-divider { display: none; }
+  .dashboard-header__logo { width: 70px; }
+  .dashboard-header__user { padding: 4px; border: 0; background: transparent; }
+  .dashboard-header__user-info { display: none; }
+}
+
+.dashboard-header__actions { display: flex; align-items: center; gap: 16px; }
+
+.dashboard-header__account-menu { position: relative; }
+.dashboard-header__user { cursor: pointer; }
+.dashboard-header__account-chevron {
+  flex-shrink: 0;
+  font-size: 20px;
+  color: #6d7b89;
+  transition: transform .2s ease;
+  &.is-open { transform: rotate(180deg); }
+}
+.dashboard-header__account-dropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  z-index: 1;
+  width: 172px;
+  padding: 6px;
+  background: #ffffff;
+  border: 1px solid #e2eaee;
+  border-radius: 10px;
+  box-shadow: 0 12px 28px rgba(15, 39, 57, .14);
+
+  button {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    padding: 10px;
+    color: #314252;
+    font-size: 13px;
+    font-weight: 600;
+    text-align: left;
+    border-radius: 7px;
+    svg { font-size: 18px; color: #119e95; }
+    &:hover { background: #f0f8f8; }
+    &.is-logout {
+      color: #c43e3e;
+      svg { color: #c43e3e; }
+      &:hover { background: #fff3f3; }
+    }
+  }
+}

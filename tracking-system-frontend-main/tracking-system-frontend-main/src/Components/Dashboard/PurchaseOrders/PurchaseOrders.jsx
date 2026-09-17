@@ -1,9 +1,10 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import { IoMdClose } from 'react-icons/io';
-import { MdCheck, MdClose, MdEdit } from 'react-icons/md';
+import { MdCheck, MdClose, MdEdit, MdMoreVert } from 'react-icons/md';
 import { toast } from 'react-toastify';
 import { LINE_STATUSES, LINE_CURRENCIES } from '../../../Constants/purchaseOrders';
-import { ADMIN_ROLES, EDIT_ROLES } from '../../../Constants/roles';
+import { EDIT_ROLES } from '../../../Constants/roles';
 import { useAuth } from '../../../Context/AuthContext';
 import {
   addLineItem,
@@ -120,9 +121,10 @@ const buildLinePayload = (line) => ({
 });
 
 export default function PurchaseOrders() {
+  const location = useLocation();
   const { user } = useAuth();
   const canEdit = EDIT_ROLES.includes(user?.role);
-  const canDelete = ADMIN_ROLES.includes(user?.role);
+  const canDelete = EDIT_ROLES.includes(user?.role);
 
   const [purchaseOrders, setPurchaseOrders] = useState([]);
   const [pagination, setPagination] = useState({ page: 1, totalPages: 1, total: 0 });
@@ -149,6 +151,7 @@ export default function PurchaseOrders() {
   const [pdfError, setPdfError] = useState('');
   const pdfRequest = useRef(0);
   const poPdfInput = useRef(null);
+  const soPdfInput = useRef(null);
   const deliveryPdfInput = useRef(null);
 
   const handleDeliveryPdfUpload = async (event) => {
@@ -161,16 +164,28 @@ export default function PurchaseOrders() {
     setPdfResult(null);
     try {
       const { importPoPdf } = await import('../../../Utils/importPoPdf');
-      const result = await importPoPdf(file);
+      const result = await importPoPdf(file, 'delivery');
       if (request !== pdfRequest.current) return;
-      const { updates, warnings } = matchDeliveryLines(result, createLines);
-      setCreateLines(previous => previous.map((line,index) => {
-        const update = updates.find(item => item.index === index);
-        return update ? { ...line, eta: update.eta, status: update.status } : line;
-      }));
+      const { updates, additions, warnings } = matchDeliveryLines(result, createLines);
+      const preparedBy = result.fields.salesPerson?.trim();
+      const matchedSalesPerson = preparedBy && matchSalesPerson(preparedBy, salesPersonOptions);
+      if (preparedBy) {
+        setFormData(previous => ({ ...previous, salesPerson: matchedSalesPerson || preparedBy }));
+        setFormErrors(previous => ({ ...previous, salesPerson: '' }));
+      }
+      setCreateLines(previous => [
+        ...previous.map((line,index) => {
+          const update = updates.find(item => item.index === index);
+          return update ? { ...line, eta: update.eta, status: update.status } : line;
+        }),
+        ...additions.map(line => ({ ...EMPTY_LINE, ...line, status: 'Delivered' })),
+      ]);
       setCreateLineErrors({});
       setPdfResult({ ...result, filename: file.name, warnings: [
-        `${updates.length} matching lines set to Delivered with the PDF delivery date as ETA. Review before creating the PO.`,
+        `${updates.length} matching lines updated and ${additions.length} missing lines added as Delivered. Review before creating the PO.`,
+        ...(preparedBy
+          ? [`Sales person set to ${matchedSalesPerson || preparedBy} from Prepared by.`]
+          : []),
         ...warnings,
       ] });
     } catch (error) {
@@ -180,7 +195,7 @@ export default function PurchaseOrders() {
     }
   };
 
-  const handlePdfUpload = async (event) => {
+  const handlePdfUpload = async (event, documentType = 'po') => {
     const file = event.target.files?.[0];
     event.target.value = '';
     if (!file) return;
@@ -190,17 +205,53 @@ export default function PurchaseOrders() {
     setPdfResult(null);
     try {
       const { importPoPdf } = await import('../../../Utils/importPoPdf');
-      const result = await importPoPdf(file);
+      const result = await importPoPdf(file, documentType);
       if (request !== pdfRequest.current) return;
+      if (documentType === 'so') {
+        const soNumber = result.fields.soNumber;
+        if (!soNumber) throw new Error('SO number or Quotation Ref No. was not found in this PDF. Enter the SO number manually.');
+        const extractedName = result.fields.salesPerson;
+        const matchingName = extractedName && matchSalesPerson(extractedName, salesPersonOptions);
+        const soFields = {
+          ...result.fields,
+          soNumber,
+          // An SO is not the source of the customer's PO number.
+          poNumber: '',
+          salesPerson: matchingName || extractedName || '',
+        };
+        setFormData(previous => Object.fromEntries(Object.entries(previous).map(([key, value]) => [
+          key,
+          key === 'salesPerson' && soFields.salesPerson ? soFields.salesPerson : value || soFields[key] || '',
+        ])));
+        setCreateLines(previous => previous.length
+          ? previous
+          : result.lines.map(line => ({ ...EMPTY_LINE, ...line })));
+        setFormErrors({});
+        setCreateLineErrors({});
+        setPdfResult({ ...result, fields: soFields, filename: file.name,
+          warnings: [
+            `SO number ${soNumber}, available form details, and ${result.lines.length} line items imported.`,
+            ...(extractedName && !matchingName
+              ? [`Prepared by "${extractedName}" was not found in the sales person list. Select it manually.`]
+              : []),
+            ...result.warnings,
+          ] });
+        return;
+      }
       if (result.fields.salesPerson) {
         const extractedName = result.fields.salesPerson;
         const matchingName = matchSalesPerson(extractedName, salesPersonOptions);
-        result.fields.salesPerson = matchingName;
-        if (!matchingName) result.warnings.push(`Prepared by "${extractedName}" has no unique match in the sales person list. Please select a sales person.`);
+        result.fields.salesPerson = matchingName || extractedName;
+        if (!matchingName) result.warnings.push(`Sales person set to "${extractedName}" from Prepared by.`);
       }
-      // Preserve user-entered values; imports only fill empty fields.
+      // Overall PO ETA is a manual business decision; never populate it from a PDF.
+      // Preserve other user-entered values and only fill empty fields from the import.
       setFormData(prev => Object.fromEntries(Object.entries(prev).map(([key, value]) =>
-        [key, value || result.fields[key] || ''])));
+        [key, key === 'overallPoEta'
+          ? value
+          : key === 'salesPerson' && result.fields.salesPerson
+            ? result.fields.salesPerson
+            : value || result.fields[key] || ''])));
       setCreateLines(prev => prev.length ? prev : result.lines.map(line => ({ ...EMPTY_LINE, ...line })));
       setPdfResult({ ...result, filename: file.name });
       setFormErrors({});
@@ -224,6 +275,8 @@ export default function PurchaseOrders() {
   const [isActivityLoading, setIsActivityLoading] = useState(false);
   const [confirmDialog, setConfirmDialog] = useState(null);
   const [salesPersonOptions, setSalesPersonOptions] = useState([]);
+  const [openActionMenuId, setOpenActionMenuId] = useState(null);
+  const actionMenuRef = useRef(null);
 
   const loadPurchaseOrders = useCallback(async () => {
     setIsLoading(true);
@@ -242,7 +295,8 @@ export default function PurchaseOrders() {
   }, [page, appliedFilters]);
 
   useEffect(() => {
-    loadPurchaseOrders();
+    const timer = window.setTimeout(() => { void loadPurchaseOrders(); }, 0);
+    return () => window.clearTimeout(timer);
   }, [loadPurchaseOrders]);
 
   useEffect(() => {
@@ -259,6 +313,24 @@ export default function PurchaseOrders() {
     const frame = requestAnimationFrame(() => setIsPanelActive(true));
     return () => cancelAnimationFrame(frame);
   }, [isPanelOpen]);
+
+  useEffect(() => {
+    if (!openActionMenuId) return undefined;
+
+    const closeActionMenu = (event) => {
+      if (!actionMenuRef.current?.contains(event.target)) setOpenActionMenuId(null);
+    };
+    const closeOnEscape = (event) => {
+      if (event.key === 'Escape') setOpenActionMenuId(null);
+    };
+
+    document.addEventListener('mousedown', closeActionMenu);
+    document.addEventListener('keydown', closeOnEscape);
+    return () => {
+      document.removeEventListener('mousedown', closeActionMenu);
+      document.removeEventListener('keydown', closeOnEscape);
+    };
+  }, [openActionMenuId]);
 
   const closePanel = () => {
     pdfRequest.current += 1;
@@ -315,12 +387,41 @@ export default function PurchaseOrders() {
     }
   };
 
+  useEffect(() => {
+    const poId = new URLSearchParams(location.search).get('po');
+    if (!poId) return;
+    let cancelled = false;
+    fetchPurchaseOrderById(poId).then(response => {
+      if (cancelled) return;
+      setSelectedPo(response.data);
+      setPanelMode('detail');
+      setDetailTab('lines');
+      setIsPanelOpen(true);
+    }).catch(error => {
+      if (!cancelled) toast.error(getFriendlyErrorMessage(error, 'This purchase order is no longer available.'));
+    });
+    return () => { cancelled = true; };
+  }, [location.search, location.key]);
+
   const openEditPanel = () => {
     if (!selectedPo) return;
     setFormData(poFormFromRecord(selectedPo));
     setFormErrors({});
     setUseAutomaticClosingDate(false);
     setPanelMode('edit');
+  };
+
+  const openEditPanelById = async (poId) => {
+    try {
+      const po = await refreshSelectedPo(poId);
+      setFormData(poFormFromRecord(po));
+      setFormErrors({});
+      setUseAutomaticClosingDate(false);
+      setPanelMode('edit');
+      setIsPanelOpen(true);
+    } catch (error) {
+      toast.error(getFriendlyErrorMessage(error, 'Failed to load purchase order.'));
+    }
   };
 
   const handleResetClosingDateToAutomatic = () => {
@@ -343,8 +444,10 @@ export default function PurchaseOrders() {
 
   useEffect(() => {
     if (panelMode === 'detail' && detailTab === 'activity' && selectedPo?._id) {
-      loadActivity(selectedPo._id);
+      const timer = window.setTimeout(() => { void loadActivity(selectedPo._id); }, 0);
+      return () => window.clearTimeout(timer);
     }
+    return undefined;
   }, [panelMode, detailTab, selectedPo?._id]);
 
   const handleFormChange = (field) => (event) => {
@@ -366,7 +469,6 @@ export default function PurchaseOrders() {
       errors.contactPersonEmail = 'Enter a valid email address';
     }
     if (!formData.paymentTerms.trim()) errors.paymentTerms = 'Payment terms are required';
-    if (!formData.overallPoEta) errors.overallPoEta = 'Overall PO ETA is required';
     if (!formData.subject.trim()) errors.subject = 'Subject is required';
     setFormErrors(errors);
     return Object.keys(errors).length === 0;
@@ -378,7 +480,6 @@ export default function PurchaseOrders() {
       soNumber: formData.soNumber.trim(),
       poDate: toIsoDate(formData.poDate),
       paymentTerms: formData.paymentTerms.trim(),
-      overallPoEta: toIsoDate(formData.overallPoEta),
       clientName: formData.clientName.trim(),
       salesPerson: formData.salesPerson.trim(),
       contactPerson: formData.contactPerson.trim(),
@@ -386,6 +487,8 @@ export default function PurchaseOrders() {
       subject: formData.subject.trim(),
       internalNotes: formData.internalNotes.trim(),
     };
+
+    if (formData.overallPoEta) payload.overallPoEta = toIsoDate(formData.overallPoEta);
 
     if (useAutomaticClosingDate) {
       payload.useAutomaticClosingDate = true;
@@ -691,7 +794,7 @@ export default function PurchaseOrders() {
         {formErrors.contactPersonEmail && <p className="po-management__error">{formErrors.contactPersonEmail}</p>}
       </div>
       <div className="po-management__field">
-        <label className="po-management__label" htmlFor="overallPoEta">Overall PO ETA *</label>
+        <label className="po-management__label" htmlFor="overallPoEta">Overall PO ETA</label>
         <PoDateInput
           id="overallPoEta"
           value={formData.overallPoEta}
@@ -892,14 +995,36 @@ export default function PurchaseOrders() {
                     </td>
                     <td>{po.numberOfLines ?? po.lines?.length ?? 0}</td>
                     <td>
-                      <div className="po-management__actions">
-                        <button type="button" className="po-management__action-btn" onClick={() => openDetailPanel(po._id)}>
-                          View
+                      <div
+                        ref={openActionMenuId === po._id ? actionMenuRef : null}
+                        className="po-management__action-menu"
+                      >
+                        <button
+                          type="button"
+                          className="po-management__more-btn"
+                          aria-label={`Actions for PO ${po.poNumber}`}
+                          aria-expanded={openActionMenuId === po._id}
+                          aria-haspopup="menu"
+                          onClick={() => setOpenActionMenuId((current) => current === po._id ? null : po._id)}
+                        >
+                          <MdMoreVert aria-hidden="true" />
                         </button>
-                        {canDelete && (
-                          <button type="button" className="po-management__action-btn is-danger" onClick={() => handleDeletePo(po._id)}>
-                            Delete
-                          </button>
+                        {openActionMenuId === po._id && (
+                          <div className="po-management__action-dropdown" role="menu">
+                            <button type="button" role="menuitem" onClick={() => { setOpenActionMenuId(null); openDetailPanel(po._id); }}>
+                              View
+                            </button>
+                            {canEdit && (
+                              <button type="button" role="menuitem" onClick={() => { setOpenActionMenuId(null); openEditPanelById(po._id); }}>
+                                Edit
+                              </button>
+                            )}
+                            {canDelete && (
+                              <button type="button" className="is-danger" role="menuitem" onClick={() => { setOpenActionMenuId(null); handleDeletePo(po._id); }}>
+                                Delete
+                              </button>
+                            )}
+                          </div>
                         )}
                       </div>
                     </td>
@@ -938,11 +1063,15 @@ export default function PurchaseOrders() {
                       <button type="button" className="po-management__pdf-button" onClick={() => poPdfInput.current?.click()} disabled={isPdfLoading || isSaving}>
                         Upload PO PDF
                       </button>
+                      <button type="button" className="po-management__pdf-button is-secondary" onClick={() => soPdfInput.current?.click()} disabled={isPdfLoading || isSaving}>
+                        Upload SO PDF
+                      </button>
                       <button type="button" className="po-management__pdf-button is-secondary" onClick={() => deliveryPdfInput.current?.click()} disabled={isPdfLoading || isSaving || !createLines.length} title={!createLines.length ? 'Add PO lines first' : 'Upload delivery PDF'}>
                         Upload Delivery PDF
                       </button>
                     </div>
                     <input ref={poPdfInput} id="po-pdf-upload" type="file" accept=".pdf,application/pdf" onChange={handlePdfUpload} hidden disabled={isPdfLoading || isSaving} />
+                    <input ref={soPdfInput} id="so-pdf-upload" type="file" accept=".pdf,application/pdf" onChange={event => handlePdfUpload(event, 'so')} hidden disabled={isPdfLoading || isSaving} />
                     <input ref={deliveryPdfInput} id="po-delivery-pdf" type="file" accept=".pdf,application/pdf" onChange={handleDeliveryPdfUpload} hidden disabled={isPdfLoading || isSaving || !createLines.length} />
                     {isPdfLoading && <p role="status">Reading PDF...</p>}
                     {pdfError && <p role="alert" className="po-management__error">{pdfError}</p>}
@@ -1027,6 +1156,10 @@ export default function PurchaseOrders() {
                   <div><span>Overall ETA</span><strong>{formatPoDate(selectedPo.overallPoEta)}</strong></div>
                   <div><span>Actual closing</span><strong>{formatPoDate(selectedPo.actualPoClosingDate)}</strong></div>
                   <div><span>Sales person</span><strong>{selectedPo.salesPerson || '—'}</strong></div>
+                  <div><span>Supplier name</span><strong>{selectedPo.supplier || '-'}</strong></div>
+                  <div><span>Supplier contact</span><strong>{selectedPo.supplierContact || '-'}</strong></div>
+                  <div><span>Supplier phone</span><strong>{selectedPo.supplierPhone || '-'}</strong></div>
+                  <div><span>Supplier email</span><strong>{selectedPo.supplierEmail || '-'}</strong></div>
                   <div><span>Payment terms</span><strong>{selectedPo.paymentTerms || '—'}</strong></div>
                   <div><span>Contact person</span><strong>{selectedPo.contactPerson || '—'}</strong></div>
                   <div><span>Contact email</span><strong>{selectedPo.contactPersonEmail || '—'}</strong></div>

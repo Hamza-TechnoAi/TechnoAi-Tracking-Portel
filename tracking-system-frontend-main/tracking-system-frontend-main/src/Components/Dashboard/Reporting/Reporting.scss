@@ -199,3 +199,55 @@
     }
   }
 }
+
+// Reporting workspace: compact controls and a restrained, readable data surface.
+.reporting {
+  max-width: 1540px;
+  margin: 0 auto;
+  .reporting__head { margin-bottom: 30px; gap: 20px; }
+  .reporting__eyebrow { margin: 0 0 11px; color: #16867f; font-size: 10px; font-weight: 700; letter-spacing: .16em; }
+  .reporting__title { font-size: clamp(27px, 2.2vw, 34px); font-weight: 700; letter-spacing: -1.1px; line-height: 1.1; color: #102838; }
+  .reporting__subtitle { margin-top: 10px; font-size: 14px; color: #687989; }
+  .reporting__count { background: #e6f8f5; color: #087b70; font-size: 11px; padding: 7px 12px; white-space: nowrap; }
+  .reporting__export-btn { padding: 12px 18px; border-radius: 9px; background: #102b3b; box-shadow: 0 8px 18px #102b3b1c; font-size: 12px; gap: 8px; }
+  .po-filters { padding: 26px; margin-bottom: 28px; border: 1px solid #e1e9ed; border-radius: 14px; box-shadow: 0 10px 30px rgba(27, 55, 73, .06); }
+  .po-filters__heading { display: flex; justify-content: space-between; align-items: center; gap: 16px; margin-bottom: 22px; }
+  .po-filters__heading h2, .reporting__table-heading h2 { margin: 0; font-size: 15px; font-weight: 700; color: #1d3748; }
+  .po-filters__heading p, .reporting__table-heading p { margin: 5px 0 0; font-size: 12px; color: #7b8797; }
+  .po-filters__heading > span { font-size: 9px; letter-spacing: 1.4px; color: #83909e; font-weight: 700; }
+  .po-filters__grid { gap: 18px 20px; }
+  .po-filters__label { color: #526174; font-size: 11px; font-weight: 600; }
+  .po-filters__input, .po-filters__select, .po-filters__check-control { min-height: 42px; padding: 10px 12px; border-color: #dfe7eb; border-radius: 8px; font-size: 12px; background: #fff; transition: border-color .15s, box-shadow .15s, background .15s; }
+  .po-filters__input:hover, .po-filters__select:hover, .po-filters__check-control:hover { border-color: #b9ced3; }
+  .po-date-input__control .po-filters__input { padding-right: 40px; }
+  .po-filters__input::placeholder { color: #929cab; }
+  .po-filters__check-control span { font-size: 12px; font-weight: 400; }
+  .po-filters__search-row { margin-top: 20px; padding-top: 18px; border-color: #edf0f4; gap: 20px; }
+  .po-filters__actions { margin-top: 22px; padding-top: 18px; border-top: 1px solid #edf0f4; }
+  .po-filters__reset-btn, .po-filters__apply-btn { min-height: 40px; border-radius: 8px; font-size: 12px; padding: 10px 18px; }
+  .po-filters__reset-btn { background: white; border: 1px solid #dfe5ec; color: #526174; }
+  .po-filters__apply-btn { background: #087f75; color: white; box-shadow: 0 2px 3px #087f7515; }
+  .po-filters__apply-btn:hover { background: #06685f; }
+  button:focus-visible { outline: 3px solid #59bcb3; outline-offset: 3px; }
+  .reporting__table-wrap { border-color: #e1e9ed; border-radius: 14px; box-shadow: 0 10px 30px rgba(27, 55, 73, .05); }
+  .reporting__table-heading { display: flex; justify-content: space-between; align-items: center; gap: 16px; padding: 22px 24px; }
+  .reporting__table { min-width: 1050px; }
+  .reporting__table th { background: #f4f8f9; color: #637685; font-size: 10px; letter-spacing: .07em; text-transform: uppercase; padding: 14px 16px; border-top: 1px solid #edf0f4; white-space: nowrap; }
+  .reporting__table td { padding: 17px 16px; font-size: 12px; color: #526174; border-color: #edf1f3; }
+  .reporting__table tbody tr { transition: background .15s ease; }
+  .reporting__table td:first-child { color: #203a50; font-weight: 600; }
+  .reporting__table td:nth-child(7), .reporting__table td:nth-child(8) { white-space: nowrap; font-variant-numeric: tabular-nums; }
+  .reporting__table tbody tr:last-child td { border-bottom: 0; }
+  .reporting__badge { display: inline-flex; align-items: center; gap: 6px; padding: 4px 9px; color: #087f75; background: #edf8f5; font-size: 10px; }
+  .reporting__badge::before { content: ''; width: 5px; height: 5px; border-radius: 50%; background: currentColor; }
+  .reporting__badge.is-closed { color: #627084; background: #f0f3f7; }
+  .reporting__pagination { justify-content: flex-end; font-size: 12px; }
+  .reporting__pagination button { background: white; border: 1px solid #dfe5ec; border-radius: 6px; font-size: 12px; }
+}
+@media (max-width: 768px) {
+  .reporting .reporting__title { font-size: 23px; }
+  .reporting .po-filters { padding: 16px; }
+  .reporting .reporting__head-actions { width: 100%; justify-content: space-between; }
+  .reporting .po-filters__heading > span { display: none; }
+  .reporting .reporting__table-heading { padding: 16px; }
+}

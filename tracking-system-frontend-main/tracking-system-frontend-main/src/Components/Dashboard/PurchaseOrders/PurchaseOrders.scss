@@ -155,6 +155,71 @@
   gap: 8px;
 }
 
+.po-management__action-menu {
+  position: relative;
+  display: inline-flex;
+}
+
+.po-management__more-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  color: $dash-primary-deep;
+  background: rgba($dash-primary, 0.12);
+  border-radius: $dash-radius-sm;
+
+  svg {
+    width: 21px;
+    height: 21px;
+  }
+
+  &:hover,
+  &:focus-visible {
+    background: rgba($dash-primary, 0.2);
+  }
+}
+
+.po-management__action-dropdown {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  z-index: 10;
+  min-width: 112px;
+  padding: 4px;
+  background: $dash-surface;
+  border: 1px solid $dash-border;
+  border-radius: $dash-radius-sm;
+  box-shadow: $dash-shadow-md;
+
+  button {
+    display: block;
+    width: 100%;
+    padding: 8px 10px;
+    font-size: $dash-font-xs;
+    font-weight: 600;
+    color: $dash-text;
+    text-align: left;
+    border-radius: calc($dash-radius-sm - 2px);
+
+    &:hover,
+    &:focus-visible {
+      background: rgba($dash-primary, 0.12);
+    }
+
+    &.is-danger {
+      color: $dash-danger;
+
+      &:hover,
+      &:focus-visible {
+        background: rgba($dash-danger, 0.1);
+      }
+    }
+  }
+}
+
 .po-management__action-btn {
   padding: 5px 8px;
   font-size: $dash-font-xs;

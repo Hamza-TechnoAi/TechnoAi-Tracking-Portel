@@ -7,6 +7,7 @@ const salesPersonRouter = require('./salesPerson.routes');
 
 const router = Router();
 
+router.use('/notifications', require('./notification.routes'));
 router.use('/users', userRouter);
 router.use('/track', trackRouter);
 router.use('/purchase-orders', purchaseOrderRouter);

@@ -1,9 +1,8 @@
-import { Link, Navigate } from 'react-router-dom';
+import { Navigate } from 'react-router-dom';
 import Seo from '../Components/Common/Seo/Seo';
 import LoginForm from '../Components/Auth/LoginForm/LoginForm';
-import TrackingNavbar from '../Components/Tracking/TrackingNavbar/TrackingNavbar';
-import TrackingFooter from '../Components/Tracking/TrackingFooter/TrackingFooter';
 import { useAuth } from '../Context/AuthContext';
+import logo from '../assets/Logo/TechnoAi-Logo.png';
 import './LoginPage.scss';
 
 export default function LoginPage() {
@@ -23,26 +22,26 @@ export default function LoginPage() {
       />
 
       <main className="login-page">
-        <TrackingNavbar />
-
         <div className="login-page__body">
           <section className="login-page__card" aria-labelledby="login-page-title">
+            <div className="login-page__brand">
+              <img src={logo} alt="TechnoAi" className="login-page__logo" />
+              <div>
+                <strong>TechnoAI</strong>
+                <span>Tracking Portal</span>
+              </div>
+            </div>
             <h1 id="login-page-title" className="login-page__title">
-              Staff Login
+              Welcome Back
             </h1>
             <p className="login-page__subtitle">
-              Sign in to manage purchase orders and shipments.
+              Sign in to manage your Tracking 
             </p>
 
             <LoginForm />
-
-            <p className="login-page__back">
-              <Link to="/">Back to shipment tracking</Link>
-            </p>
+            <p className="login-page__copyright">©TechnoAI Tracking System</p>
           </section>
         </div>
-
-        <TrackingFooter />
       </main>
     </>
   );
