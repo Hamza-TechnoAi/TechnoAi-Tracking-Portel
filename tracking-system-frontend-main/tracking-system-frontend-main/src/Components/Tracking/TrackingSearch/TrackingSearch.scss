@@ -6,7 +6,7 @@
   align-items: stretch;
   gap: 5px;
   width: 100%;
-  max-width: 560px;
+  max-width: 570px;
 }
 
 .tracking-search__group {
@@ -15,7 +15,7 @@
   flex: 1;
   min-width: 0;
   border: 1px solid $primary;
-  border-radius: $radius;
+  border-radius: 11px;
   overflow: hidden;
   background: transparent;
 }
@@ -24,10 +24,10 @@
   flex-shrink: 0;
   display: inline-flex;
   align-items: center;
-  padding: 12px 20px;
+  padding: 11px 20px;
   background: $primary;
   color: $black;
-  font-size: 0.8125rem;
+  font-size: 0.82rem;
   font-weight: $fw-semibold;
   white-space: nowrap;
   user-select: none;
@@ -42,7 +42,7 @@
 .tracking-search__input {
   flex: 1;
   min-width: 0;
-  padding: 12px 18px;
+  padding: 11px 18px;
   background: transparent;
   border: none;
   color: $text;
@@ -67,11 +67,11 @@
   @include flex-center;
   flex-shrink: 0;
   width: 48px;
-  min-height: 48px;
+  min-height: 46px;
   padding: 0;
   background: $primary;
   color: $black;
-  border-radius: $radius;
+  border-radius: 11px;
   transition: opacity 0.2s ease, transform 0.2s ease;
 
   &:hover:not(:disabled) {
