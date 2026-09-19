@@ -1,8 +1,11 @@
 import { getDocument, GlobalWorkerOptions } from 'pdfjs-dist';
-import workerUrl from 'pdfjs-dist/build/pdf.worker.min.mjs?url';
+import PdfWorker from 'pdfjs-dist/build/pdf.worker.min.mjs?worker&inline';
 import { parsePoPdfRows } from './poPdfParser';
 
-GlobalWorkerOptions.workerSrc = workerUrl;
+// Keep the worker inside the application bundle. Some production hosts do not
+// serve emitted `.mjs` assets with the correct MIME type (or omit them during
+// deployment), which makes PDF.js fall back to a fake worker and fail.
+GlobalWorkerOptions.workerPort = new PdfWorker();
 
 export async function importPoPdf(file, documentType = 'po') {
   if (!/\.pdf$/i.test(file.name)) throw new Error('Please select a PDF file.');

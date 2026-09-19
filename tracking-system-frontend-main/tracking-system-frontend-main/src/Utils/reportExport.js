@@ -15,23 +15,64 @@ const REPORT_HEADERS = [
   'Overall ETA',
   'Status',
   'Lines',
+  'LD',
+  'LP',
+  'PO Total Amount',
 ];
 
 const REPORT_TITLE = 'Purchase Order Report';
 const COMPANY_NAME = SITE.name || 'TechnoAi';
 
-const mapPurchaseOrderToRow = (po) => ([
-  po.poNumber || '',
-  po.soNumber || '',
-  po.clientName || '',
-  po.salesPerson || '',
-  po.contactPerson || '',
-  po.paymentTerms || '',
-  formatPoDate(po.poDate),
-  formatPoDate(po.overallPoEta),
-  po.poStatus || '',
-  String(po.numberOfLines ?? po.lines?.length ?? 0),
-]);
+export const getPoLineMetrics = (po = {}) => {
+  const lines = Array.isArray(po.lines) ? po.lines : [];
+  const total = Number(po.numberOfLines ?? lines.length) || 0;
+  const delivered = lines.filter((line) => line.status === 'Delivered').length;
+
+  return {
+    total,
+    delivered,
+    pending: Math.max(total - delivered, 0),
+  };
+};
+
+export const formatPoTotalAmount = (po = {}) => {
+  const totalsByCurrency = (po.lines || []).reduce((totals, line) => {
+    const currency = line.currency || 'AED';
+    const amount = (Number(line.quantity) || 0) * (Number(line.unitPrice) || 0);
+    totals[currency] = (totals[currency] || 0) + amount;
+    return totals;
+  }, {});
+
+  const totals = Object.entries(totalsByCurrency);
+  if (totals.length === 0) return '—';
+
+  return totals
+    .map(([currency, amount]) => `${currency} ${amount.toLocaleString('en-US', {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    })}`)
+    .join(' · ');
+};
+
+const mapPurchaseOrderToRow = (po) => {
+  const lineMetrics = getPoLineMetrics(po);
+
+  return [
+    po.poNumber || '',
+    po.soNumber || '',
+    po.clientName || '',
+    po.salesPerson || '',
+    po.contactPerson || '',
+    po.paymentTerms || '',
+    formatPoDate(po.poDate),
+    formatPoDate(po.overallPoEta),
+    po.poStatus || '',
+    String(lineMetrics.total),
+    String(lineMetrics.delivered),
+    String(lineMetrics.pending),
+    formatPoTotalAmount(po),
+  ];
+};
 
 const buildFileName = (extension) => {
   const stamp = new Date().toISOString().slice(0, 10);

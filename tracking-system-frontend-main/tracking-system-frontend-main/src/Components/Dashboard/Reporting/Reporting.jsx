@@ -8,6 +8,8 @@ import { buildPoFilterParams, INITIAL_PO_FILTERS } from '../../../Utils/poFilter
 import {
   exportPurchaseOrdersToExcel,
   exportPurchaseOrdersToPdf,
+  formatPoTotalAmount,
+  getPoLineMetrics,
 } from '../../../Utils/reportExport';
 import ServerErrorState from '../../Common/ServerErrorState/ServerErrorState';
 import PoFilters from '../PoFilters/PoFilters';
@@ -15,6 +17,15 @@ import './Reporting.scss';
 
 const PAGE_SIZE = 20;
 const EXPORT_PAGE_SIZE = 100;
+
+const isOpenPoOverdue = (po) => {
+  if (po.poStatus !== 'Open' || !po.overallPoEta) return false;
+
+  const eta = new Date(po.overallPoEta);
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  return !Number.isNaN(eta.getTime()) && eta < today;
+};
 
 export default function Reporting() {
   const [purchaseOrders, setPurchaseOrders] = useState([]);
@@ -208,27 +219,46 @@ export default function Reporting() {
                   <th>Overall ETA</th>
                   <th>Status</th>
                   <th>Lines</th>
+                  <th title="Lines Delivered">LD</th>
+                  <th title="Lines Pending">LP</th>
+                  <th>PO Total Amount</th>
                 </tr>
               </thead>
               <tbody>
-                {purchaseOrders.map((po) => (
-                  <tr key={po._id}>
-                    <td>{po.poNumber}</td>
-                    <td>{po.soNumber}</td>
-                    <td>{po.clientName}</td>
-                    <td>{po.salesPerson || '—'}</td>
-                    <td>{po.contactPerson || '—'}</td>
-                    <td>{po.paymentTerms || '—'}</td>
-                    <td>{formatPoDate(po.poDate)}</td>
-                    <td>{formatPoDate(po.overallPoEta)}</td>
-                    <td>
-                      <span className={`reporting__badge${po.poStatus === 'Closed' ? ' is-closed' : ''}`}>
-                        {po.poStatus}
-                      </span>
-                    </td>
-                    <td>{po.numberOfLines ?? po.lines?.length ?? 0}</td>
-                  </tr>
-                ))}
+                {purchaseOrders.map((po) => {
+                  const lineMetrics = getPoLineMetrics(po);
+                  const isOverdue = isOpenPoOverdue(po);
+
+                  return (
+                    <tr key={po._id}>
+                      <td>{po.poNumber}</td>
+                      <td>{po.soNumber}</td>
+                      <td>{po.clientName}</td>
+                      <td>{po.salesPerson || '—'}</td>
+                      <td>{po.contactPerson || '—'}</td>
+                      <td>{po.paymentTerms || '—'}</td>
+                      <td>{formatPoDate(po.poDate)}</td>
+                      <td>
+                        <span
+                          className={`reporting__eta${isOverdue ? ' is-overdue' : ''}`}
+                          title={isOverdue ? 'Overall ETA has passed and this PO is still open' : undefined}
+                        >
+                          {formatPoDate(po.overallPoEta)}
+                          {isOverdue && <span className="reporting__overdue-label">Overdue</span>}
+                        </span>
+                      </td>
+                      <td>
+                        <span className={`reporting__badge${po.poStatus === 'Closed' ? ' is-closed' : ''}`}>
+                          {po.poStatus}
+                        </span>
+                      </td>
+                      <td>{lineMetrics.total}</td>
+                      <td>{lineMetrics.delivered}</td>
+                      <td>{lineMetrics.pending}</td>
+                      <td className="reporting__amount">{formatPoTotalAmount(po)}</td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           )}
